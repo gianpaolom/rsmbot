@@ -1,0 +1,18 @@
+{
+  "name": "rsmbot",
+  "version": "0.0.1",
+  "description": "Posts RS monitor alerts to slack channel",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gian Paolo Mazzola",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "node-slackr": "^0.1.4",
+    "winston": "^2.2.0"
+  }
+}
