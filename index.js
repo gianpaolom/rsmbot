@@ -29,11 +29,15 @@ var slack = new Slack(config.slack.webhook_url + config.slack.webhook_key, {
 var server = app.listen(config.api.port, config.api.host, function () {
   var host = server.address().address
   var port = server.address().port
-  console.log(config.app.name + '\n')
-  console.log('host: ' + host + '\n')
-  console.log('port: ' + port + '\n')
-  console.log('slack_webhook: ' + config.slack.webhook_key + '\n')
-  console.log('slack_channel: ' + config.slack.channel + '\n')
+  var dateFormat = require('dateformat')
+  var now = new Date()
+  dateFormat.masks.customTime = 'dd/mmm/yyyy:HH:MM:ss o'
+  logger.log('info', '[%s] - RSMbot listening at %s:%s - Slack Channel: %s - Slack Webhook ID: %s',
+    dateFormat(now, 'customTime'),
+    host, port,
+    config.slack.channel,
+    config.slack.webhook_key
+  )
 })
 
 /* Root API Endpoint */
@@ -45,8 +49,6 @@ app.get('/', function (req, res) {
 app.post('/slack/webhook/', function (req, res) {
   console.log('Got a POST request for webhook')
   // console.log(req.query.key)
-  // console.log(req.headers['user-agent'])
-  // console.log(req.body.details.state)
   // console.dir(req.body)
   var retStatus = 200
   var retMessage = 'OK'
