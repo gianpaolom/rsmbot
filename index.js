@@ -32,6 +32,8 @@ var server = app.listen(config.api.port, config.api.host, function () {
   console.log(config.app.name + '\n')
   console.log('host: ' + host + '\n')
   console.log('port: ' + port + '\n')
+  console.log('slack_webhook: ' + config.slack.webhook_key + '\n')
+  console.log('slack_channel: ' + config.slack.channel + '\n')
 })
 
 /* Root API Endpoint */
@@ -49,19 +51,27 @@ app.post('/slack/webhook/', function (req, res) {
   var retStatus = 200
   var retMessage = 'OK'
 
-  if (!('x-rackspace-webhook-token' in req.headers) || (config.rs.allowed_tokens.indexOf(req.headers['x-rackspace-webhook-token']) === -1)) {
+  if (checkHeaders(req.headers)) {
     retStatus = 404
     retMessage = 'What???'
   } else {
     var body = buildMessages(req.body)
     slack.notify(body, function (err, result) {
-      if (err) { console.log(err) }
+      if (err) {
+        logger.log('error', err)
+      }
       logger.log('info', 'Message sent: ' + JSON.stringify(body))
     })
   }
   res.status(retStatus).send(retMessage)
 })
 
+// Check if POST is legit and coming from Rackspace
+function checkHeaders (headers) {
+  return (!('x-rackspace-webhook-token' in headers) || (config.rs.allowed_tokens.indexOf(headers['x-rackspace-webhook-token']) === -1))
+}
+
+// Parse Rackspace's payload and format a message for Slack webhook
 function buildMessages (payload) {
   var colour = 'good'
   switch (payload.details.state) {
