@@ -55,16 +55,20 @@ app.post('/slack/webhook/', function (req, res) {
     retStatus = 404
     retMessage = 'What???'
   } else {
-    var body = buildMessages(req.body)
-    slack.notify(body, function (err, result) {
-      if (err) {
-        logger.log('error', err)
-      }
-      logger.log('info', 'Message sent: ' + JSON.stringify(body))
-    })
+    postSlack(req.body)
   }
   res.status(retStatus).send(retMessage)
 })
+
+function postSlack (body) {
+  buildMessages(body, function (err, result) {
+    if (err) { logger.log('error', err) }
+    slack.notify(result, function (err2, result2) {
+      if (err2) { logger.log('error', err2) }
+      logger.log('info', 'Message sent: ' + JSON.stringify(result))
+    })
+  })
+}
 
 // Check if POST is legit and coming from Rackspace
 function checkHeaders (headers) {
@@ -72,7 +76,7 @@ function checkHeaders (headers) {
 }
 
 // Parse Rackspace's payload and format a message for Slack webhook
-function buildMessages (payload) {
+function buildMessages (payload, callback) {
   var colour = 'good'
   switch (payload.details.state) {
     case 'OK':
@@ -113,5 +117,5 @@ function buildMessages (payload) {
       }
     ]
   }
-  return messages
+  callback(null, messages)
 }
