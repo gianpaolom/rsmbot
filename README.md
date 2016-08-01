@@ -3,7 +3,7 @@ Rackspace Monitor Slack BOT
 
 ##Summary
 A Slack BOT written in Node.js that sends RackSpace monitor alerts to a [Slack](https://slack.com/) channel.
-It accepts POSTs from Racspace intelligence and send a message to a Slack webhook
+It accepts POSTs from Rackspace intelligence and sends a message to a Slack webhook
 
 ### File structure
 ```
