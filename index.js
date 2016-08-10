@@ -1,6 +1,6 @@
 'use strict'
 
-var config = require('./config')
+// var config = require('./config')
 var express = require('express')
 var bodyParser = require('body-parser')
 var logger = require('./lib/logger')
@@ -26,7 +26,7 @@ var slack = new Slack(process.env.SLACK_WEBHOOK_URL + process.env.SLACK_WEBHOOK_
 /*
  * Main Express Process
  */
-var server = app.listen(process.env.API_PORT, process.env.API_HOST, function () {
+var server = app.listen((process.env.API_PORT || 3000), function () {
   var host = server.address().address
   var port = server.address().port
   var dateFormat = require('dateformat')
