@@ -17,16 +17,16 @@ app.use(require('morgan')('combined', {stream: logger.stream}))
 
 /* Initialising Slack Client */
 var Slack = require('node-slackr')
-var slack = new Slack(config.slack.webhook_url + config.slack.webhook_key, {
-  channel: config.slack.channel,
-  username: config.slack.username,
-  icon_emoji: config.slack.emoji
+var slack = new Slack(process.env.SLACK_WEBHOOK_URL + process.env.SLACK_WEBHOOK_KEY, {
+  channel: process.env.SLACK_CHANNEL,
+  username: process.env.SLACK_USERNAME,
+  icon_emoji: process.env.SLACK_EMOJI
 })
 
 /*
  * Main Express Process
  */
-var server = app.listen(config.api.port, config.api.host, function () {
+var server = app.listen(process.env.API_PORT, process.env.API_HOST, function () {
   var host = server.address().address
   var port = server.address().port
   var dateFormat = require('dateformat')
@@ -35,8 +35,8 @@ var server = app.listen(config.api.port, config.api.host, function () {
   logger.log('info', '[%s] - RSMbot listening at %s:%s - Slack Channel: %s - Slack Webhook ID: %s',
     dateFormat(now, 'customTime'),
     host, port,
-    config.slack.channel,
-    config.slack.webhook_key
+    process.env.SLACK_CHANNEL,
+    process.env.SLACK_WEBHOOK_KEY
   )
 })
 
@@ -74,7 +74,7 @@ function postSlack (body) {
 
 // Check if POST is legit and coming from Rackspace
 function checkHeaders (headers) {
-  return (!('x-rackspace-webhook-token' in headers) || (config.rs.allowed_tokens.indexOf(headers['x-rackspace-webhook-token']) === -1))
+  return (!('x-rackspace-webhook-token' in headers) || (process.env.RS_ALLOWED_TOKENS.indexOf(headers['x-rackspace-webhook-token']) === -1))
 }
 
 // Parse Rackspace's payload and format a message for Slack webhook
@@ -95,8 +95,8 @@ function buildMessages (payload, callback) {
   }
 
   var messages = {
-    channel: config.slack.channel,
-    username: config.slack.username,
+    channel: process.env.SLACK_CHANNEL,
+    username: process.env.SLACK_USERNAME,
     attachments: [
       {
         fallback: 'Alert!',
