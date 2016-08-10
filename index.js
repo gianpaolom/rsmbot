@@ -26,7 +26,7 @@ var slack = new Slack(process.env.SLACK_WEBHOOK_URL + process.env.SLACK_WEBHOOK_
 /*
  * Main Express Process
  */
-var server = app.listen((process.env.API_PORT || 3000), function () {
+var server = app.listen((process.env.PORT || 3000), process.env.API_HOST, function () {
   var host = server.address().address
   var port = server.address().port
   var dateFormat = require('dateformat')
