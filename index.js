@@ -23,6 +23,13 @@ var slack = new Slack(process.env.SLACK_WEBHOOK_URL + process.env.SLACK_WEBHOOK_
   icon_emoji: process.env.SLACK_EMOJI
 })
 
+// Keep Awake om Heroku
+if(process.env.BOT_URL) {
+  setInterval(function() {
+      https.get('https://' + process.env.BOT_URL);
+  }, process.env.BOT_PING_INTERVAL || 43200000); // every 12 hours
+}
+
 /*
  * Main Express Process
  */
